@@ -34,9 +34,8 @@ type LocalBlock struct {
 // something was set in diagnostics.
 type VariableAssignment struct {
 	// From tells were it was taken from, command/varfile/env/default
-	From  string
-	Value cty.Value
-	Expr  hcl.Expression
+	From string
+	Expr hcl.Expression
 }
 
 type Variable struct {
@@ -44,6 +43,9 @@ type Variable struct {
 	// from these will be the one used. If none is set; an error will be
 	// returned by Value().
 	Values []VariableAssignment
+
+	// Value of this Variable
+	EvaluatedValue cty.Value
 
 	// Validations contains all variables validation rules to be applied to the
 	// used value. Only the used value - the last value from Values - is
@@ -83,11 +85,17 @@ func (v *Variable) References() ([]*addrs.Reference, hcl.Diagnostics) {
 	}
 	return refs, diags
 }
+
+func (v *Variable) Run(ectx *hcl.EvalContext) hcl.Diagnostics {
+
+	return nil
+}
+
 func (v *Variable) GoString() string {
 	b := &strings.Builder{}
 	fmt.Fprintf(b, "{type:%s", v.ExpectedType.GoString())
 	for _, vv := range v.Values {
-		fmt.Fprintf(b, ",%s:%s", vv.From, vv.Value)
+		fmt.Fprintf(b, ",%s:%s", vv.From, v.Value)
 	}
 	fmt.Fprintf(b, "}")
 	return b.String()

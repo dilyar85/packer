@@ -287,9 +287,8 @@ func (c *PackerConfig) evaluateLocalVariable(local *LocalBlock) hcl.Diagnostics 
 		Name:      local.Name,
 		Sensitive: local.Sensitive,
 		Values: []VariableAssignment{{
-			Value: value,
-			Expr:  local.Expr,
-			From:  "default",
+			Expr: local.Expr,
+			From: "default",
 		}},
 		ExpectedType: value.Type(),
 	}
